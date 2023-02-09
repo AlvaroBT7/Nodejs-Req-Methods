@@ -84,8 +84,8 @@ routerMatematicas.patch("/params/:tema", (req, res) => {
 // path request without query params
 
 routerMatematicas.patch("/:tema", (req, res) => {
-  const { tema } = req.params;
   const nuevoContenido = req.body;
+  const { tema } = req.params;
   const index = matematicas.findIndex(curso => curso.tema == tema);
   if (index === -1) res.status(404).send(`${res.statusCode}: No se ha encontrado nada en ${res.url}`)
   let cursoACambiar = matematicas[index];
@@ -96,6 +96,19 @@ routerMatematicas.patch("/:tema", (req, res) => {
   res.status(200).send(`${JSON.stringify(matematicas)}`);
 });
 
+
+routerMatematicas.delete("/:tema", (req, res) => {
+  const { tema } = req.params;
+  if (tema == "*") {
+    matematicas.splice(0);
+    res.status(200).send(`${JSON.stringify(matematicas)}`);
+  }
+  const index = matematicas.findIndex(curso => curso.tema == tema);
+  if (index === -1) res.status(404).send(`${res.statusCode}: No se ha encontrado nada en: ${res.url}`);
+  const cursoAEliminar = matematicas[index];
+  matematicas.splice(matematicas.indexOf(cursoAEliminar), 1);
+  res.status(200).send(`${JSON.stringify(matematicas)}`);
+})
 
 
 module.exports = routerMatematicas;
