@@ -62,8 +62,9 @@ routerMatematicas.put("/:tema", (req, res) => {
   );
 });
 
+// patch request with query params
 
-routerMatematicas.patch("/:tema", (req, res) => {
+routerMatematicas.patch("/params/:tema", (req, res) => {
   const { tema } = req.params;
   const { newtema } = req.query;
   const { newtitle } = req.query;
@@ -78,6 +79,23 @@ routerMatematicas.patch("/:tema", (req, res) => {
 
   res.status(200).send(`${JSON.stringify(matematicas)}`);
 });
+
+
+// path request without query params
+
+routerMatematicas.patch("/:tema", (req, res) => {
+  const { tema } = req.params;
+  const nuevoContenido = req.body;
+  const index = matematicas.findIndex(curso => curso.tema == tema);
+  if (index === -1) res.status(404).send(`${res.statusCode}: No se ha encontrado nada en ${res.url}`)
+  let cursoACambiar = matematicas[index];
+
+  Object.assign(cursoACambiar, nuevoContenido);
+  console.log(nuevoContenido);
+
+  res.status(200).send(`${JSON.stringify(matematicas)}`);
+});
+
 
 
 module.exports = routerMatematicas;
