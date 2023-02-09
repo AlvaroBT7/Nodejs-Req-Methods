@@ -58,8 +58,25 @@ routerMatematicas.put("/:tema", (req, res) => {
   let ultimoCurso = matematicas[index];
   matematicas[index] = nuevoCurso;
   res.send(
-    `${JSON.stringify(ultimoCurso)} => ${JSON.stringify(matematicas[index])}`
+    `${JSON.stringify(matematicas)}`
   );
+});
+
+
+routerMatematicas.patch("/:tema", (req, res) => {
+  const { tema } = req.params;
+  const { newtema } = req.query;
+  const { newtitle } = req.query;
+  const { newlevel } = req.query;
+
+  const index = matematicas.findIndex(curso => curso.tema == tema);
+  if (index == -1) res.status(404).send(`${req.statusCode}: No se ha encontrado nada en ${req.url}`);
+
+  if (newtema) matematicas[index].tema = newtema;
+  if (newtitle) matematicas[index].title = newtitle;
+  if (newlevel) matematicas[index].nivel = newlevel;
+
+  res.status(200).send(`${JSON.stringify(matematicas)}`);
 });
 
 
