@@ -50,5 +50,17 @@ routerMatematicas.post("/", (req, res) => {
   res.send(JSON.stringify(matematicas));
 });
 
+routerMatematicas.put("/:tema", (req, res) => {
+  const nuevoCurso = req.body;
+  const { tema } = req.params;
+  const index = matematicas.findIndex(curso => curso.tema == tema);
+  if (index === -1) res.status(404).send(`${res.statusCode}: No se ha encontrado nada en la ruta solicitada`);
+  let ultimoCurso = matematicas[index];
+  matematicas[index] = nuevoCurso;
+  res.send(
+    `${JSON.stringify(ultimoCurso)} => ${JSON.stringify(matematicas[index])}`
+  );
+});
+
 
 module.exports = routerMatematicas;
