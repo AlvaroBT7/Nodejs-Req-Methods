@@ -110,5 +110,4 @@ routerMatematicas.delete("/:tema", (req, res) => {
   res.status(200).send(`${JSON.stringify(matematicas)}`);
 })
 
-
 module.exports = routerMatematicas;
