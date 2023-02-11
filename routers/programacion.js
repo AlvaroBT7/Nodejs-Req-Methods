@@ -3,6 +3,7 @@ const {programming} = require("../datos/cursos.js").cursos;
 
 // router
 const routerProgramacion = express.Router();
+routerProgramacion.use(express.json());
 
 
 // todas las posibles rutuas con sus respectivos routers
@@ -25,37 +26,39 @@ routerProgramacion.get("/", (req, res) => {
 // empleando parametros de busqueda pora optimizar el codigo. El return de la ulatima linea de codigo es unicamente par aque pare la ejecucion de la funcion pasada como argumento al metodo.
   
 routerProgramacion.get("/:language", (req, res) => {
-let language = req.params.language;
-let cursoProgramacion = programming.filter(curso => curso.language === language);
-if (cursoProgramacion.length === 0){
-    return res.status(404).send(`${res.statusCode}: No se ha encontrado nada en ${req.url}`);
-}
-cursoProgramacion = JSON.stringify(cursoProgramacion);
-res.send(cursoProgramacion);
+  let language = req.params.language;
+  let cursoProgramacion = programming.filter(curso => curso.language === language);
+  if (cursoProgramacion.length === 0){
+      return res.status(204).end();
+  }
+  cursoProgramacion = JSON.stringify(cursoProgramacion);
+  return res.send(cursoProgramacion);
 });
 
   
 routerProgramacion.get("/:language/:level", (req, res) => {
-const language = req.params.language;
-const level = req.params.level;
+  const language = req.params.language;
+  const level = req.params.level;
 
-let cursoProgramacion = programming.filter(curso => {
-    if (language != "*"){
-    return curso.language == language && curso.level == level
-    }
-    return curso.level == level
-});
+  let cursoProgramacion = programming.filter(curso => {
+      if (language != "*"){
+        return curso.language === language && curso.level === level
+      }
+      else return curso.level === level
+  });
 
-if (cursoProgramacion.length == 0){
-    if (language != "*"){
-    return res.status(404).send(`${res.statusCode}: No se han encontrado cursos de ${language} de nivel ${level}`);
-    }
-    return res.status(404).send(`${res.statusCode}: No se han encontrado cursos de nivel ${level}`); 
-}
+  if (cursoProgramacion.length === 0){
+    return res.status(204).end();
+  }
 
-return res.send(JSON.stringify(cursoProgramacion));
+  return res.send(JSON.stringify(cursoProgramacion));
 })
 
+routerProgramacion.post("/", (req, res) => {
+  const nuevoCurso = req.body;
+  programming.push(nuevoCurso);
+  return res.status(200).send(programming);
+});
 
 // exportaciones
 module.exports = routerProgramacion;

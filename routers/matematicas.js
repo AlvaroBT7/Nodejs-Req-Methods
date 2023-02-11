@@ -3,7 +3,6 @@ const { matematicas } = require("../datos/cursos.js").cursos;
 
 // router
 const routerMatematicas = express.Router();
-
 routerMatematicas.use(express.json());
 
 
@@ -11,17 +10,17 @@ routerMatematicas.use(express.json());
 
 routerMatematicas.get("/", (req, res) => {
   let cursosMatematicas = JSON.stringify(matematicas);
-  res.status(200).send(cursosMatematicas);
+  return res.status(200).send(cursosMatematicas);
 });
 
 routerMatematicas.get("/:tema", (req, res) => {
   const tema = req.params.tema;
   let cursoMatematicas = matematicas.filter(curso => curso.tema == tema);
   if (cursoMatematicas.length === 0) {
-    return res.status(404).send(`${res.statusCode}: No se ha encontrado nada en ${req.url}`);
+    return res.status(404).end();
   }
   cursoMatematicas = JSON.stringify(cursoMatematicas);
-  res.status(200).send(cursoMatematicas);
+  return res.status(200).send(cursoMatematicas);
 });
 
 routerMatematicas.get("/:tema/:nivel", (req, res) => {
@@ -35,7 +34,7 @@ routerMatematicas.get("/:tema/:nivel", (req, res) => {
     cursoMatematicas = matematicas.filter(curso => curso.tema == tema && curso.nivel == nivel);
   }
   if (cursoMatematicas.length === 0) {
-    return res.status(404).send(`${res.statusCode}: No se han encontrado cursos de matematicas del tema ${tema} con un nivel de fificultad ${nivel}`);
+    return res.status(404).end();
   }
   cursoMatematicas = JSON.stringify(cursoMatematicas);
   return res.status(200).send(cursoMatematicas);
@@ -47,17 +46,17 @@ routerMatematicas.get("/:tema/:nivel", (req, res) => {
 routerMatematicas.post("/", (req, res) => {
   const nuevoCurso = req.body;
   matematicas.push(nuevoCurso);
-  res.send(JSON.stringify(matematicas));
+  return res.send(JSON.stringify(matematicas));
 });
 
 routerMatematicas.put("/:tema", (req, res) => {
   const nuevoCurso = req.body;
   const { tema } = req.params;
   const index = matematicas.findIndex(curso => curso.tema == tema);
-  if (index === -1) res.status(404).send(`${res.statusCode}: No se ha encontrado nada en la ruta solicitada`);
+  if (index === -1) res.status(404).end();
   let ultimoCurso = matematicas[index];
   matematicas[index] = nuevoCurso;
-  res.send(
+  return res.send(
     `${JSON.stringify(matematicas)}`
   );
 });
@@ -71,13 +70,13 @@ routerMatematicas.patch("/params/:tema", (req, res) => {
   const { newlevel } = req.query;
 
   const index = matematicas.findIndex(curso => curso.tema == tema);
-  if (index == -1) res.status(404).send(`${req.statusCode}: No se ha encontrado nada en ${req.url}`);
+  if (index == -1) res.status(404).end();
 
   if (newtema) matematicas[index].tema = newtema;
   if (newtitle) matematicas[index].title = newtitle;
   if (newlevel) matematicas[index].nivel = newlevel;
 
-  res.status(200).send(`${JSON.stringify(matematicas)}`);
+  return res.status(200).send(`${JSON.stringify(matematicas)}`);
 });
 
 
@@ -87,13 +86,13 @@ routerMatematicas.patch("/:tema", (req, res) => {
   const nuevoContenido = req.body;
   const { tema } = req.params;
   const index = matematicas.findIndex(curso => curso.tema == tema);
-  if (index === -1) res.status(404).send(`${res.statusCode}: No se ha encontrado nada en ${res.url}`)
+  if (index === -1) res.status(404).end();
   let cursoACambiar = matematicas[index];
 
   Object.assign(cursoACambiar, nuevoContenido);
   console.log(nuevoContenido);
 
-  res.status(200).send(`${JSON.stringify(matematicas)}`);
+  return res.status(200).send(`${JSON.stringify(matematicas)}`);
 });
 
 
@@ -104,10 +103,10 @@ routerMatematicas.delete("/:tema", (req, res) => {
     res.status(200).send(`${JSON.stringify(matematicas)}`);
   }
   const index = matematicas.findIndex(curso => curso.tema == tema);
-  if (index === -1) res.status(404).send(`${res.statusCode}: No se ha encontrado nada en: ${res.url}`);
+  if (index === -1) res.status(404).end();
   const cursoAEliminar = matematicas[index];
   matematicas.splice(matematicas.indexOf(cursoAEliminar), 1);
-  res.status(200).send(`${JSON.stringify(matematicas)}`);
+  return res.status(200).send(`${JSON.stringify(matematicas)}`);
 })
 
 module.exports = routerMatematicas;
